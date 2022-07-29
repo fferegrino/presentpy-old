@@ -56,7 +56,14 @@ def add_bullet_slide(prs, title, bullet_points):
         p.level = 1
 
 
-def add_code_slide(prs, title, parsed_lines):
+def add_code_slide(prs, parsed_lines, title):
+    add_code_slide_highlighted(prs, parsed_lines, title, highlights=[0])
+
+
+def add_code_slide_highlighted(prs, parsed_lines, title, highlights):
+
+    highlighted_lines = set(highlights)
+
     bullet_slide_layout = prs.slide_layouts[1]
 
     slide = prs.slides.add_slide(bullet_slide_layout)
@@ -75,11 +82,12 @@ def add_code_slide(prs, title, parsed_lines):
     p = text_frame.paragraphs[0]
     p.bullet = False
 
-    for line in parsed_lines:
+    for ln, line in enumerate(parsed_lines, 1):
         for kind, text in line:
             run = p.add_run()
             run.text = text
             font = run.font
+            font.bold = ln in highlighted_lines
             font.color.rgb = token_colors.get(kind, RGBColor(0, 0, 0))
             font.name = "Courier"
             font.size = Pt(14)
@@ -129,9 +137,5 @@ def process_notebook(file):
 
                 parsed_lines = get_parsed_lines(source)
 
-                add_code_slide(
-                    presentation,
-                    None,
-                    parsed_lines,
-                )
+                add_code_slide(presentation, parsed_lines, None)
     return presentation
