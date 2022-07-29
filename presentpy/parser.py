@@ -56,14 +56,15 @@ def add_bullet_slide(prs, title, bullet_points):
         p.level = 1
 
 
-def add_code_slide(prs, title, code):
+def add_code_slide(prs, title, parsed_lines):
     bullet_slide_layout = prs.slide_layouts[1]
 
     slide = prs.slides.add_slide(bullet_slide_layout)
     shapes = slide.shapes
 
-    title_shape = shapes.title
-    title_shape.text = title
+    if title:
+        title_shape = shapes.title
+        title_shape.text = title
 
     body_shape = shapes.placeholders[1]
 
@@ -73,18 +74,33 @@ def add_code_slide(prs, title, code):
 
     p = text_frame.paragraphs[0]
     p.bullet = False
-    for kind, content in code:
-        run = p.add_run()
-        run.bullet = False
-        if content == "\n":
-            run.text = "\x0A"
-        else:
-            run.text = content
 
-        font = run.font
-        font.color.rgb = token_colors.get(kind, RGBColor(0, 0, 0))
-        font.name = "Courier"
-        font.size = Pt(18)
+    for line in parsed_lines:
+        for kind, text in line:
+            run = p.add_run()
+            run.text = text
+            font = run.font
+            font.color.rgb = token_colors.get(kind, RGBColor(0, 0, 0))
+            font.name = "Courier"
+            font.size = Pt(14)
+        run = p.add_run()
+        run.font.size = Pt(14)
+        run.text = "\x0A"
+
+
+def get_parsed_lines(source):
+    lines = []
+    line = []
+    for token, value in lex(source, PythonLexer()):
+        if token is Token.Text and value == "\n":
+            lines.append(line)
+            line = []
+        else:
+            line.append((token, value))
+
+    lines.append(line)
+
+    return lines
 
 
 def process_notebook(file):
@@ -111,11 +127,11 @@ def process_notebook(file):
                 if not source:
                     continue
 
-                rtf = lex(source, PythonLexer())
+                parsed_lines = get_parsed_lines(source)
 
                 add_code_slide(
                     presentation,
-                    "code",
-                    rtf,
+                    None,
+                    parsed_lines,
                 )
     return presentation
