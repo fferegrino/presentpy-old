@@ -1,5 +1,6 @@
-import click
 from pathlib import Path
+
+import click
 
 from presentpy.parser import process_notebook
 
@@ -11,5 +12,6 @@ def process(file):
     presentation = process_notebook(path)
     presentation.save(f"{path.stem}.pptx")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     process()

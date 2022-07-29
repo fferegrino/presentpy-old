@@ -1,12 +1,13 @@
 import mistletoe
 import nbformat
 import pygments
+import pygments.styles
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Pt
 from pygments import lex
+from pygments.lexers.python import PythonLexer
 from pygments.token import Token
-import pygments.styles
 
 
 def get_styles():
@@ -20,7 +21,7 @@ def get_styles():
             continue
 
         pad = 1 if len(color) == 3 else 2
-        token_colors[token] = RGBColor(*[int(color[i: i + pad], 16) for i in range(0, len(color), pad)])
+        token_colors[token] = RGBColor(*[int(color[i : i + pad], 16) for i in range(0, len(color), pad)])
     token_colors[Token.Keyword] = RGBColor(0, 128, 20)
     token_colors[Token.Name.Class] = RGBColor(49, 0, 250)
     token_colors[Token.Name.Builtin.Pseudo] = RGBColor(27, 82, 167)
@@ -32,7 +33,8 @@ def get_styles():
 
     return token_colors
 
-token_colors =get_styles()
+
+token_colors = get_styles()
 
 
 def add_bullet_slide(prs, title, bullet_points):
