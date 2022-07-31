@@ -5,6 +5,7 @@ import mistletoe
 import nbformat
 import pygments
 import pygments.styles
+from mistletoe import block_token
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Pt
@@ -40,6 +41,17 @@ def get_styles() -> Dict[Any, RGBColor]:
 
 
 token_colors = get_styles()
+
+
+def add_title_slide(prs: Presentation, title: str, subtitle: Optional[str] = None):
+    title_slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(title_slide_layout)
+    title_shape = slide.shapes.title
+    subtitle_shape = slide.placeholders[1]
+
+    title_shape.text = title
+    if subtitle:
+        subtitle_shape.text = subtitle
 
 
 def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) -> None:
@@ -134,14 +146,17 @@ def process_notebook(file):
                 source = cell["source"]
                 document = mistletoe.Document(source)
                 header = document.children[0]
-                bullets = []
                 if len(document.children) > 1:
+                    if isinstance(document.children[1], block_token.Heading):
+                        sub_header = document.children[1]
+                        add_title_slide(presentation, header.children[0].content, sub_header.children[0].content)
+                    elif isinstance(document.children[1], block_token.List):
                         bullets = [bullet.children[0].children[0].content for bullet in document.children[1].children]
-                add_bullet_slide(
-                    presentation,
-                    header.children[0].content,
-                    bullets,
-                )
+                        add_bullet_slide(
+                            presentation,
+                            header.children[0].content,
+                            bullets,
+                        )
 
             elif cell["cell_type"] == "code":
                 source = cell["source"]
@@ -163,9 +178,7 @@ def get_config_from_source(source_lines):
         config = {
             key: value for key, _, value in [conf.partition("=") for conf in shlex.split(source_lines[-1][2:].strip())]
         }
-    dataclass_atrributes = {
-        "title": config.get('title')
-    }
+    dataclass_atrributes = {"title": config.get("title")}
 
     if highlights := config.get("highlights"):
         lines_to_highlights = highlights.split(",")
