@@ -136,7 +136,7 @@ def process_notebook(file):
                 header = document.children[0]
                 bullets = []
                 if len(document.children) > 1:
-                    bullets = [bullet.children[0].children[0].content for bullet in document.children[1].children]
+                        bullets = [bullet.children[0].children[0].content for bullet in document.children[1].children]
                 add_bullet_slide(
                     presentation,
                     header.children[0].content,
@@ -163,7 +163,10 @@ def get_config_from_source(source_lines):
         config = {
             key: value for key, _, value in [conf.partition("=") for conf in shlex.split(source_lines[-1][2:].strip())]
         }
-    dataclass_atrributes = {}
+    dataclass_atrributes = {
+        "title": config.get('title')
+    }
+
     if highlights := config.get("highlights"):
         lines_to_highlights = highlights.split(",")
         highlight_ints = []
