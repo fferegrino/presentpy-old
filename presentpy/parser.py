@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List, Optional, Tuple
+import shlex
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import mistletoe
 import nbformat
@@ -11,8 +12,10 @@ from pygments import lex
 from pygments.lexers.python import PythonLexer
 from pygments.token import Token
 
+from presentpy.code_cell_config import CodeCellConfig
 
-def get_styles() -> Dict[Token, RGBColor]:
+
+def get_styles() -> Dict[Any, RGBColor]:
     style = pygments.styles.get_style_by_name("default")
     token_colors = {}
     for token, str_style in style.styles.items():
@@ -58,14 +61,19 @@ def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) ->
         p.level = 1
 
 
-def add_code_slide(prs: Presentation, parsed_lines: List[List[Tuple[Token, str]]], title: Optional[str]) -> None:
-    add_code_slide_highlighted(prs, parsed_lines, title, highlights=[0])
+def add_code_slide(prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], config: CodeCellConfig) -> None:
+    highlights = config.highlights
+    if not highlights:
+        highlights = [[0]]
+    else:
+        highlights = [[0]] + highlights
+    for hl in highlights:
+        add_code_slide_highlighted(prs, parsed_lines, config.title, highlights=hl)
 
 
 def add_code_slide_highlighted(
-    prs: Presentation, parsed_lines: List[List[Tuple[Token, str]]], title: Optional[str], highlights: Iterable[int]
+    prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], title: Optional[str], highlights: Iterable[int]
 ) -> None:
-
     highlighted_lines = set(highlights)
 
     bullet_slide_layout = prs.slide_layouts[1]
@@ -100,9 +108,10 @@ def add_code_slide_highlighted(
         run.text = "\x0A"
 
 
-def get_parsed_lines(source: str) -> List[List[Tuple[Token, str]]]:
+def get_parsed_lines(source: str) -> List[List[Tuple[Any, str]]]:
     lines = []
     line = []
+
     for token, value in lex(source, PythonLexer()):
         if token is Token.Text and value == "\n":
             lines.append(line)
@@ -139,7 +148,32 @@ def process_notebook(file):
                 if not source:
                     continue
 
+                source_lines = source.split("\n")
+                cell_config = get_config_from_source(source_lines)
+                source = "\n".join(source_lines[:-1])
                 parsed_lines = get_parsed_lines(source)
 
-                add_code_slide(presentation, parsed_lines, None)
+                add_code_slide(presentation, parsed_lines, cell_config)
     return presentation
+
+
+def get_config_from_source(source_lines):
+    config = {}
+    if source_lines[-1].startswith("#%"):
+        config = {
+            key: value for key, _, value in [conf.partition("=") for conf in shlex.split(source_lines[-1][2:].strip())]
+        }
+    dataclass_atrributes = {}
+    if highlights := config.get("highlights"):
+        lines_to_highlights = highlights.split(",")
+        highlight_ints = []
+        for l in lines_to_highlights:
+            start, _, end = l.partition("-")
+            if end:
+                highlight_ints.append(list(range(int(start), int(end) + 1)))
+            else:
+                highlight_ints.append([int(start)])
+
+        dataclass_atrributes["highlights"] = highlight_ints
+    cell_config = CodeCellConfig(**dataclass_atrributes)
+    return cell_config
