@@ -1,3 +1,5 @@
+from typing import Dict, Iterable, List, Optional, Tuple
+
 import mistletoe
 import nbformat
 import pygments
@@ -10,7 +12,7 @@ from pygments.lexers.python import PythonLexer
 from pygments.token import Token
 
 
-def get_styles():
+def get_styles() -> Dict[Token, RGBColor]:
     style = pygments.styles.get_style_by_name("default")
     token_colors = {}
     for token, str_style in style.styles.items():
@@ -37,7 +39,7 @@ def get_styles():
 token_colors = get_styles()
 
 
-def add_bullet_slide(prs, title, bullet_points):
+def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) -> None:
     bullet_slide_layout = prs.slide_layouts[1]
 
     slide = prs.slides.add_slide(bullet_slide_layout)
@@ -56,11 +58,13 @@ def add_bullet_slide(prs, title, bullet_points):
         p.level = 1
 
 
-def add_code_slide(prs, parsed_lines, title):
+def add_code_slide(prs: Presentation, parsed_lines: List[List[Tuple[Token, str]]], title: Optional[str]) -> None:
     add_code_slide_highlighted(prs, parsed_lines, title, highlights=[0])
 
 
-def add_code_slide_highlighted(prs, parsed_lines, title, highlights):
+def add_code_slide_highlighted(
+    prs: Presentation, parsed_lines: List[List[Tuple[Token, str]]], title: Optional[str], highlights: Iterable[int]
+) -> None:
 
     highlighted_lines = set(highlights)
 
@@ -96,7 +100,7 @@ def add_code_slide_highlighted(prs, parsed_lines, title, highlights):
         run.text = "\x0A"
 
 
-def get_parsed_lines(source):
+def get_parsed_lines(source: str) -> List[List[Tuple[Token, str]]]:
     lines = []
     line = []
     for token, value in lex(source, PythonLexer()):
