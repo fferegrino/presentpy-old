@@ -9,6 +9,12 @@ ipython_config.py
 __pycache__/
 *.py[cod]
 *$py.class
+dist/
 
 # PyCharm
 .idea/
+
+# Extras
+.DS_Store
+*.pptx
+
