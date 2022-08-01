@@ -5,6 +5,9 @@ description = "Create presentations from Jupyter Notebooks"
 authors = ["Antonio Feregrino <antonio.feregrino@gmail.com>"]
 license = "MIT"
 
+[tool.poetry.scripts]
+presentpy = 'presentpy.__main__:process'
+
 [tool.poetry.dependencies]
 python = "^3.7"
 nbconvert = "^6.5.0"
