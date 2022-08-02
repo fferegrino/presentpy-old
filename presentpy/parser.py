@@ -40,7 +40,7 @@ def process_markdown_cell(source, presentation):
     if len(document.children) > 1:
         if isinstance(document.children[1], block_token.Heading):
             sub_header = document.children[1]
-            add_title_slide(presentation, header.children[0].content, sub_header.children[0].content)
+            add_title_slide(presentation, header.children[0].content, sub_header.children[0].content, header.level)
         elif isinstance(document.children[1], block_token.List):
             bullets = [bullet.children[0].children[0].content for bullet in document.children[1].children]
             add_bullet_slide(

@@ -20,8 +20,9 @@ BLANK_BLANK_SLIDE = 5
 CARRIAGE_RETURN = "\x0A"
 
 
-def add_title_slide(prs: Presentation, title: str, subtitle: Optional[str] = None):
-    title_slide_layout = prs.slide_layouts[BLANK_SECTION_HEADER_SLIDE]
+def add_title_slide(prs: Presentation, title: str, subtitle: Optional[str] = None, parent_level: int = 1):
+
+    title_slide_layout = prs.slide_layouts[BLANK_MAIN_TITLE_SLIDE if parent_level == 1 else BLANK_SECTION_HEADER_SLIDE]
     slide = prs.slides.add_slide(title_slide_layout)
     title_shape = slide.shapes.title
     subtitle_shape = slide.placeholders[1]
