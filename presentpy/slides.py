@@ -11,8 +11,17 @@ from presentpy.code_cell_config import CodeCellConfig
 token_colors = get_styles()
 
 
+BLANK_MAIN_TITLE_SLIDE = 0
+BLANK_SECTION_HEADER_SLIDE = 1
+BLANK_BULLETS_SLIDE = 2
+BLANK_TEXT_SLIDE = 3
+BLANK_CODE_SLIDE = 4
+BLANK_BLANK_SLIDE = 5
+CARRIAGE_RETURN = "\x0A"
+
+
 def add_title_slide(prs: Presentation, title: str, subtitle: Optional[str] = None):
-    title_slide_layout = prs.slide_layouts[0]
+    title_slide_layout = prs.slide_layouts[BLANK_SECTION_HEADER_SLIDE]
     slide = prs.slides.add_slide(title_slide_layout)
     title_shape = slide.shapes.title
     subtitle_shape = slide.placeholders[1]
@@ -23,7 +32,7 @@ def add_title_slide(prs: Presentation, title: str, subtitle: Optional[str] = Non
 
 
 def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) -> None:
-    bullet_slide_layout = prs.slide_layouts[1]
+    bullet_slide_layout = prs.slide_layouts[BLANK_BULLETS_SLIDE]
 
     slide = prs.slides.add_slide(bullet_slide_layout)
     shapes = slide.shapes
@@ -61,7 +70,7 @@ def add_code_slide_highlighted(
 ) -> None:
     highlighted_lines = set(highlights)
 
-    bullet_slide_layout = prs.slide_layouts[1]
+    bullet_slide_layout = prs.slide_layouts[BLANK_CODE_SLIDE]
 
     slide = prs.slides.add_slide(bullet_slide_layout)
     shapes = slide.shapes
@@ -90,4 +99,4 @@ def add_code_slide_highlighted(
             font.size = Pt(14)
         run = p.add_run()
         run.font.size = Pt(14)
-        run.text = "\x0A"
+        run.text = CARRIAGE_RETURN

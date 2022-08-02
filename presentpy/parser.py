@@ -1,14 +1,17 @@
 import mistletoe
 import nbformat
+import pkg_resources
 from mistletoe import block_token
 from pptx import Presentation
 
 from presentpy.code import get_config_from_source, get_parsed_lines
 from presentpy.slides import add_bullet_slide, add_code_slide, add_title_slide
 
+BLANK_TEMPLATE = pkg_resources.resource_filename("presentpy", "templates/Blank.pptx")
+
 
 def process_notebook(file):
-    presentation = Presentation()
+    presentation = Presentation(BLANK_TEMPLATE)
     with open(file) as r:
         notebook = nbformat.read(r, as_version=4)
 
@@ -18,9 +21,9 @@ def process_notebook(file):
                 continue
 
             if cell["cell_type"] == "markdown":
-                process_markdown_cell(cell, presentation)
+                process_markdown_cell(source, presentation)
             elif cell["cell_type"] == "code":
-                process_code_cell(cell, presentation)
+                process_code_cell(source, presentation)
     return presentation
 
 
