@@ -28,9 +28,7 @@ def process_notebook(file):
 
 
 def process_code_cell(source, presentation):
-    source_lines = source.split("\n")
-    cell_config = get_config_from_source(source_lines)
-    source = "\n".join(source_lines[:-1])
+    source, cell_config = get_config_from_source(source)
     parsed_lines = get_parsed_lines(source)
     add_code_slide(presentation, parsed_lines, cell_config)
     return source

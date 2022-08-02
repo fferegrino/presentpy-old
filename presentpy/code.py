@@ -11,12 +11,16 @@ from pygments.token import Token
 from presentpy.code_cell_config import CodeCellConfig
 
 
-def get_config_from_source(source_lines):
+def get_config_from_source(source: str) -> Tuple[str, CodeCellConfig]:
+    source_lines = source.strip().split("\n")
     config = {}
     if source_lines[-1].startswith("#%"):
         config = {
             key: value for key, _, value in [conf.partition("=") for conf in shlex.split(source_lines[-1][2:].strip())]
         }
+
+        source = "\n".join(source_lines[:-1])
+
     dataclass_atrributes = {"title": config.get("title")}
 
     if highlights := config.get("highlights"):
@@ -31,7 +35,7 @@ def get_config_from_source(source_lines):
 
         dataclass_atrributes["highlights"] = highlight_ints
     cell_config = CodeCellConfig(**dataclass_atrributes)
-    return cell_config
+    return source.strip(), cell_config
 
 
 def get_parsed_lines(source: str) -> List[List[Tuple[Any, str]]]:
