@@ -8,9 +8,6 @@ from pptx.util import Pt
 from presentpy.code import get_styles
 from presentpy.code_cell_config import CodeCellConfig
 
-token_colors = get_styles()
-
-
 BLANK_MAIN_TITLE_SLIDE = 0
 BLANK_SECTION_HEADER_SLIDE = 1
 BLANK_BULLETS_SLIDE = 2
@@ -56,19 +53,26 @@ def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) ->
         p.level = 0
 
 
-def add_code_slide(prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], config: CodeCellConfig) -> None:
+def add_code_slide(
+    prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], config: CodeCellConfig, style: str = "light"
+) -> None:
     highlights = config.highlights
     if not highlights:
         highlights = [[0]]
     else:
         highlights = [[0]] + highlights
     for hl in highlights:
-        add_code_slide_highlighted(prs, parsed_lines, config.title, highlights=hl)
+        add_code_slide_highlighted(prs, parsed_lines, config.title, highlights=hl, style=style)
 
 
 def add_code_slide_highlighted(
-    prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], title: Optional[str], highlights: Iterable[int]
+    prs: Presentation,
+    parsed_lines: List[List[Tuple[Any, str]]],
+    title: Optional[str],
+    highlights: Iterable[int],
+    style: str,
 ) -> None:
+    token_colors = get_styles(style)
     highlighted_lines = set(highlights)
 
     bullet_slide_layout = prs.slide_layouts[BLANK_CODE_SLIDE]

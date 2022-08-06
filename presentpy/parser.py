@@ -48,3 +48,9 @@ def process_markdown_cell(source, presentation):
                 header.children[0].content,
                 bullets,
             )
+        elif isinstance(document.children[1], block_token.CodeFence):
+            code_fence = document.children[1]
+            source, cell_config = get_config_from_source(code_fence.children[0].content)
+            cell_config.title = header.children[0].content
+            parsed_lines = get_parsed_lines(source, code_fence.language)
+            add_code_slide(presentation, parsed_lines, cell_config)
