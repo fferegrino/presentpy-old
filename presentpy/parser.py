@@ -7,11 +7,10 @@ from pptx import Presentation
 from presentpy.code import get_config_from_source, get_parsed_lines
 from presentpy.slides import add_bullet_slide, add_code_slide, add_title_slide
 
-BLANK_TEMPLATE = pkg_resources.resource_filename("presentpy", "templates/Blank.pptx")
-
 
 def process_notebook(file, theme):
-    presentation = Presentation(BLANK_TEMPLATE)
+    template = pkg_resources.resource_filename("presentpy", f"templates/Blank-{theme}.pptx")
+    presentation = Presentation(template)
     with open(file) as r:
         notebook = nbformat.read(r, as_version=4)
 

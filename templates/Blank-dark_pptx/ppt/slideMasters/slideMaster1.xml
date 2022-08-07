@@ -2,7 +2,7 @@
 <p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
   <p:cSld>
     <p:bg>
-      <p:bgRef idx="1001">
+      <p:bgRef idx="1002">
         <a:schemeClr val="bg1"/>
       </p:bgRef>
     </p:bg>
@@ -168,7 +168,7 @@
           <a:p>
             <a:fld id="{9935E044-C50E-204D-AE06-2E212BD9D030}" type="datetimeFigureOut">
               <a:rPr lang="en-US" smtClean="0"/>
-              <a:t>8/1/22</a:t>
+              <a:t>8/7/22</a:t>
             </a:fld>
             <a:endParaRPr lang="en-US"/>
           </a:p>
@@ -271,7 +271,7 @@
       </p:ext>
     </p:extLst>
   </p:cSld>
-  <p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
+  <p:clrMap bg1="dk1" tx1="lt1" bg2="dk2" tx2="lt2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
   <p:sldLayoutIdLst>
     <p:sldLayoutId id="2147483649" r:id="rId1"/>
     <p:sldLayoutId id="2147483651" r:id="rId2"/>
