@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "presentpy"
-version = "0.2.1"
+version = "0.2.4"
 description = "Create presentations from Jupyter Notebooks"
 authors = ["Antonio Feregrino <antonio.feregrino@gmail.com>"]
 license = "MIT"
