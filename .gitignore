@@ -11,8 +11,9 @@ __pycache__/
 *$py.class
 dist/
 
-# PyCharm
+# PyCharm & VSCode
 .idea/
+.vscode/
 
 # Extras
 .DS_Store

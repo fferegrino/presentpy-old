@@ -66,12 +66,16 @@ EXTRA_STYLES = {
         Token.Name.Function.Magic: RGBColor(49, 0, 250),
         Token.Comment.Single: RGBColor(65, 127, 127),
         Token.Keyword.Constant: RGBColor(0, 112, 32),
-    }
+    },
+    "dark": {
+        Token.Literal.Number.Integer: RGBColor.from_string("F78C6C"),
+        Token.Comment.Single: RGBColor.from_string("546E7A"),
+    },
 }
 
 
 @lru_cache
-def get_styles(theme: str = "light") -> Dict[Any, RGBColor]:
+def get_theme(theme: str = "light") -> Dict[Any, RGBColor]:
     style_name = "friendly" if theme == "light" else "material"
 
     style = pygments.styles.get_style_by_name(style_name)

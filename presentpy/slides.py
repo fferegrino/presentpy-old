@@ -5,7 +5,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_VERTICAL_ANCHOR
 from pptx.util import Pt
 
-from presentpy.code import get_styles
+from presentpy.code import get_theme
 from presentpy.code_cell_config import CodeCellConfig
 
 BLANK_MAIN_TITLE_SLIDE = 0
@@ -54,7 +54,7 @@ def add_bullet_slide(prs: Presentation, title: str, bullet_points: List[str]) ->
 
 
 def add_code_slide(
-    prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], config: CodeCellConfig, style: str = "light"
+    prs: Presentation, parsed_lines: List[List[Tuple[Any, str]]], config: CodeCellConfig, theme: str = "light"
 ) -> None:
     highlights = config.highlights
     if not highlights:
@@ -62,7 +62,7 @@ def add_code_slide(
     else:
         highlights = [[0]] + highlights
     for hl in highlights:
-        add_code_slide_highlighted(prs, parsed_lines, config.title, highlights=hl, style=style)
+        add_code_slide_highlighted(prs, parsed_lines, config.title, highlights=hl, theme=theme)
 
 
 def add_code_slide_highlighted(
@@ -70,9 +70,9 @@ def add_code_slide_highlighted(
     parsed_lines: List[List[Tuple[Any, str]]],
     title: Optional[str],
     highlights: Iterable[int],
-    style: str,
+    theme: str,
 ) -> None:
-    token_colors = get_styles(style)
+    token_colors = get_theme(theme)
     highlighted_lines = set(highlights)
 
     bullet_slide_layout = prs.slide_layouts[BLANK_CODE_SLIDE]

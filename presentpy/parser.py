@@ -10,7 +10,7 @@ from presentpy.slides import add_bullet_slide, add_code_slide, add_title_slide
 BLANK_TEMPLATE = pkg_resources.resource_filename("presentpy", "templates/Blank.pptx")
 
 
-def process_notebook(file):
+def process_notebook(file, theme):
     presentation = Presentation(BLANK_TEMPLATE)
     with open(file) as r:
         notebook = nbformat.read(r, as_version=4)
@@ -21,20 +21,20 @@ def process_notebook(file):
                 continue
 
             if cell["cell_type"] == "markdown":
-                process_markdown_cell(source, presentation)
+                process_markdown_cell(source, presentation, theme=theme)
             elif cell["cell_type"] == "code":
-                process_code_cell(source, presentation)
+                process_code_cell(source, presentation, code_style=theme)
     return presentation
 
 
-def process_code_cell(source, presentation):
+def process_code_cell(source, presentation, code_style):
     source, cell_config = get_config_from_source(source)
     parsed_lines = get_parsed_lines(source)
-    add_code_slide(presentation, parsed_lines, cell_config)
+    add_code_slide(presentation, parsed_lines, cell_config, theme=code_style)
     return source
 
 
-def process_markdown_cell(source, presentation):
+def process_markdown_cell(source, presentation, theme):
     document = mistletoe.Document(source)
     header = document.children[0]
     if len(document.children) > 1:
@@ -53,4 +53,4 @@ def process_markdown_cell(source, presentation):
             source, cell_config = get_config_from_source(code_fence.children[0].content)
             cell_config.title = header.children[0].content
             parsed_lines = get_parsed_lines(source, code_fence.language)
-            add_code_slide(presentation, parsed_lines, cell_config)
+            add_code_slide(presentation, parsed_lines, cell_config, theme=theme)
