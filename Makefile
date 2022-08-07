@@ -2,6 +2,10 @@ fmt:
 	black .
 	isort .
 
+lint:
+	isort . --check-only
+	black . --check
+
 build: pptx-templates
 	poetry build
 
@@ -12,6 +16,15 @@ pptx-templates:
 
 unpack-pptx:
 	./utils/unpptx.sh templates
+
+patch:
+	bumpversion patch
+
+minor:
+	bumpversion minor
+
+major:
+	bumpversion major
 
 clean:
 	rm -rf dist
